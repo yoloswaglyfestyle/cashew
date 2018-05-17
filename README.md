@@ -1,3 +1,7 @@
+# MQTT-Node-Starter
+
+This boilerplate is meant to help you get rolling faster with a simple pub-sub architecture and scale out as needed.
+
 ## Components
 
 ### IDP
@@ -71,6 +75,11 @@ Messages sent from handler to mobile device are published to topic names prefixe
 
 ## Setup
 
+Prereq's:
+- Redis Db (at least one)
+- Mongo Db
+- Loggly Account
+
 You'll need the following environment variables. You can either add them to your environmemt or create an `.env` file in the project root.
 
 ```
@@ -85,6 +94,8 @@ BROKER_PORT=8883
 TLS_KEY_FILE=../ca-certificates/server.key
 TLS_CERT_FILE=../ca-certificates/server.crt
 CA_CERT_FILE=../ca-certificates/ca.crt
+MONGO_DB_URL=mongodb://test:test@00000000.mlab.com:27490/someName
+MONGO_DB_NAME=someName
 ```
 
 ## Scalability
@@ -106,3 +117,7 @@ The authorization mechanism is written to only allow mobile devices to subscribe
 
 ### Todo
 Confirm protection against MiTM and DDoS attacks
+
+## Credits
+
+Thanks to Jakub Synowiec (@jsynowiec) for taking the time to create and maintain a great node/ts boilerplate. It helped us get moving much faster! https://github.com/jsynowiec/node-typescript-boilerplate 
