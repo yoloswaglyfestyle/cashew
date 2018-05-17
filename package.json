@@ -1,7 +1,7 @@
 {
-  "name": "node-typescript-boilerplate",
+  "name": "cashew",
   "version": "0.0.0",
-  "description": "Minimalistic boilerplate to quick-start Node.js development in TypeScript.",
+  "description": "Backend for VaultWallet.",
   "engineStrict": true,
   "engines": {
     "node": ">= 8.9.0"
@@ -12,6 +12,7 @@
     "jest": "~22.4.3",
     "rimraf": "~2.6.2",
     "ts-jest": "~22.4.4",
+    "ts-node": "^6.0.3",
     "tslint": "~5.9.1",
     "tslint-microsoft-contrib": "~5.0.3",
     "tsutils": "~2.26.2",
@@ -27,9 +28,13 @@
     "test-only": "jest --coverage",
     "test:watch": "jest --watch"
   },
-  "author": "Jakub Synowiec <github@jakubsynowiec.info>",
-  "license": "APLv2",
+  "author": "Byron Sommardahl <byron@acklenavenue.com>",
   "dependencies": {
-    "tslib": "~1.9.0"
+    "aedes": "^0.34.0",
+    "dotenv": "^5.0.1",
+    "jsonwebtoken": "^8.2.1",
+    "mqtt": "^2.18.0",
+    "tslib": "~1.9.0",
+    "winston-loggly-bulk": "^2.0.2"
   }
 }
