@@ -6,13 +6,16 @@ var mqtt = require('mqtt');
 export function connect(deviceName, token) {
   return new Promise((resolve, reject) => {
     try {
+      const key = fs.readFileSync(path.join(__dirname, process.env.TLS_KEY_FILE));
+      const cert = fs.readFileSync(path.join(__dirname, process.env.TLS_CERT_FILE));
+      const ca = fs.readFileSync(path.join(__dirname, process.env.CA_CERT_FILE));
       var client = mqtt.connect({
         host: 'localhost',
         port: process.env.BROKER_PORT,
         protocol: 'mqtts',
-        key: fs.readFileSync(path.join(__dirname, process.env.TLS_KEY_FILE)),
-        cert: fs.readFileSync(path.join(__dirname, process.env.TLS_CERT_FILE)),
-        ca: fs.readFileSync(path.join(__dirname, process.env.CA_CERT_FILE)),
+        key,
+        cert,
+        ca,
         username: 'JWT',
         password: token,
         rejectUnauthorized: false,

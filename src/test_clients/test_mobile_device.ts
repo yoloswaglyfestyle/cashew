@@ -1,4 +1,4 @@
-import { connect, subscribe } from './clientHelper';
+import { connect, subscribe } from '../clientHelper';
 
 var jwt = require('jsonwebtoken');
 const userId = 139871238127389;

@@ -56,8 +56,8 @@ aedes.on('subscribe', function (subscriptions, client) {
 
 export function startBroker(cb) {
   const sslOptions = {
-    key: fs.readFileSync(path.join(__dirname, process.env.TLS_KEY_FILE)),
-    cert: fs.readFileSync(path.join(__dirname, process.env.TLS_CERT_FILE))
+    key: fs.readFileSync(path.join(__dirname, '../', process.env.TLS_KEY_FILE)),
+    cert: fs.readFileSync(path.join(__dirname, '../', process.env.TLS_CERT_FILE))
   };
   var server = require('tls').createServer(sslOptions, aedes.handle)
   var port = process.env.BROKER_PORT;
