@@ -77,12 +77,32 @@ You'll need the following environment variables. You can either add them to your
 JWT_SECRET=shhhhh
 LOGGLY_TOKEN=0000000-0000-0000-9001-0000000000
 LOGGLY_SUBDOMAIN=something
+REDIS_MQ_HOST=127.0.0.1
+REDIS_DB_HOST=127.0.0.1
+REDIS_MQ_POST=6379
+REDIS_DB_POST=6379
+BROKER_PORT=8883
+TLS_KEY_FILE=../ca-certificates/server.key
+TLS_CERT_FILE=../ca-certificates/server.crt
+CA_CERT_FILE=../ca-certificates/ca.crt
 ```
+
+## Scalability
+
+The broker is ready to cluster. It uses Redis to persist subscriptions and topics in-flight. It also employs MqEmitter-Redis which is cluster-ready. We should be able to put the broker behind a load balancer and scale out.
 
 ## Security
 
 ### TLS
-Connection to the broker must be made with SSL.
+Connection to the broker must be made with TLS.
+
+Create a test cert and key file using the following command. This tutorial might help: http://www.steves-internet-guide.com/mosquitto-tls/
+
+Clients need the ca cert along with the server cert and key. The server only needs the server cert and key.
+
+### Subscription Partitioning
+
+The authorization mechanism is written to only allow mobile devices to subscribe to topics that include the user's id as a prefix. If the wrong user id is provided, the subscription is refused.
 
 ### Todo
-Confirm protection against MITM and DDoS attacks
+Confirm protection against MiTM and DDoS attacks
