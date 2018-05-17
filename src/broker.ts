@@ -22,8 +22,14 @@ aedes.on('connectionError', function (_client, err) {
   logError("Connection Error", err);
 });
 
-aedes.on('publish', function (packet, _client) {
-  logInfo('Published', packet.payload.toString());
+aedes.on('publish', function (packet) {
+  logInfo('Published', packet.topic, packet.payload.toString());
+});
+
+aedes.on('subscribe', function (subscriptions, client) {
+  subscriptions.forEach((sub => {
+    logInfo('Subscribed', sub.topic, client.id);
+  }))
 });
 
 export function startBroker(cb) {

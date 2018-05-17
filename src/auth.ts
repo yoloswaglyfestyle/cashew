@@ -19,13 +19,13 @@ export function authorizePublish() {
 export function authorizeSubscribe() {
   return function (client, sub, callback) {
     if (!client.deviceProfile) {
-      return callback(new Error('Not authorized. Please login!'), false);
+      return callback(new Error('Not authenticated. Please login!'), false);
     }
-    if (!client.deviceProfile.subscribe || client.deviceProfile.subscribe.length === 0) {
-      return callback(new Error('User has no authorized subscriptions.'), false);
+    if (client.deviceProfile.handler) {
+      return callback(null, sub);
     }
-    if (client.deviceProfile.subscribe.indexOf(sub.topic) === -1) {
-      return callback(new Error(`User is not authorized to subscribe to "${sub.topic}."`), false);
+    if (sub.topic.indexOf(client.deviceProfile.user_id) !== 0) {
+      return callback(new Error(`Not authorized to subscribe to "${sub.topic}."`), false);
     }
 
     if (sub.topic === 'bbb') {
@@ -43,11 +43,9 @@ export function authenticateWithJWT() {
 
     if (username !== 'JWT') { return callback(null, false); }
 
-    jwt.verify(password.toString(), process.env.SECRET, function (err, profile) {
+    jwt.verify(password.toString(), process.env.JWT_SECRET, function (err, profile) {
       if (err) { return callback("Error getting UserInfo", false); }
       logInfo("Authenticated client " + profile.user_id);
-      logInfo(profile.subscribe);
-      logInfo(profile.publish);
       client.deviceProfile = profile;
       return callback(null, true);
     });

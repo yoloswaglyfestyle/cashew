@@ -27,9 +27,9 @@ Mobile devices will both publish and subscribe. Topics will be used to divide th
 
 ### Handlers
 
-Handlers monitor (subscribe to) topics in order to carry out the wishes of the user. In this case, handlers could be analogous to AWS's Lambda Functions. Each handler should be small and focuses on one task. Handlers can be deployed to various environments.
+Handlers monitor (subscribe to) topics in order to carry out the wishes of the user. In this case, handlers could be analogous to AWS's Lambda Functions. Each handler should be small and focuses on one task. Handlers can be deployed to various environments. 
 
-Handlers do not authenticate using JWT. Instead handlers will send username "handler" and password `<some_shared_private_key>` when connecting.
+Handlers also authenticate using JWT.
 
 Messages sent from handler to mobile device are published to topic names prefixed with the user id (ex: "423144_some_topic"). Messages sent from mobile device to handler do not have the user id prefix.
 
@@ -74,7 +74,7 @@ Messages sent from handler to mobile device are published to topic names prefixe
 You'll need the following environment variables. You can either add them to your environmemt or create an `.env` file in the project root.
 
 ```
-SECRET=shhhhh
+JWT_SECRET=shhhhh
 LOGGLY_TOKEN=0000000-0000-0000-9001-0000000000
 LOGGLY_SUBDOMAIN=something
 ```
