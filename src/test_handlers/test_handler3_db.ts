@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { connect, subscribe, getHandlerToken } from './clientHelper';
+import { connect, subscribe, getHandlerToken } from '../clientHelper';
 const MongoClient = require('mongodb').MongoClient;
 
 export function startHandler3() {

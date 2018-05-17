@@ -1,4 +1,3 @@
-import { logInfo } from './logger';
 import { connect, subscribe } from './clientHelper';
 
 var jwt = require('jsonwebtoken');
@@ -19,7 +18,7 @@ export function startMobileDevice() {
       const topic = `${userId}/got_apples`
       subscribe(client, topic)
         .then(apples => {
-          logInfo("subscriber receiving", topic, apples)
+          console.log("subscriber receiving", topic, apples)
         })
     });
 }

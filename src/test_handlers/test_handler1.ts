@@ -1,4 +1,4 @@
-import { connect, subscribe, getHandlerToken } from './clientHelper';
+import { connect, subscribe, getHandlerToken } from '../clientHelper';
 
 export function startHandler1() {
   connect('handler1', getHandlerToken())
