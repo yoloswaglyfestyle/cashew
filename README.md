@@ -151,5 +151,4 @@ The authorization mechanism is written to only allow mobile devices to subscribe
 Thanks to Jakub Synowiec (@jsynowiec) for taking the time to create and maintain a great node/ts boilerplate. It helped us get moving much faster! https://github.com/jsynowiec/node-typescript-boilerplate 
 
 ## Sponsors
-
-1[Vault Wallet](https://vaultwallet.io/wp-content/uploads/2018/03/vault_logo_light.png) (https://vaultwallet.io)
+[![Vault Wallet](https://vaultwallet.io/wp-content/uploads/2018/03/vault_logo_light.png)](https://vaultwallet.io)
