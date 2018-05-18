@@ -2,6 +2,8 @@ var jwt = require('jsonwebtoken');
 var fs = require('fs');
 var path = require('path');
 var mqtt = require('mqtt');
+import { MqttClient } from 'mqtt';
+import { IPayload } from '../src/IPayload';
 
 export function connect(deviceName, token) {
   return new Promise((resolve, reject) => {
@@ -9,7 +11,7 @@ export function connect(deviceName, token) {
       const key = fs.readFileSync(path.join(__dirname, process.env.TLS_KEY_FILE));
       const cert = fs.readFileSync(path.join(__dirname, process.env.TLS_CERT_FILE));
       const ca = fs.readFileSync(path.join(__dirname, process.env.CA_CERT_FILE));
-      var client = mqtt.connect({
+      var client: MqttClient = mqtt.connect({
         host: 'localhost',
         port: process.env.BROKER_PORT,
         protocol: 'mqtts',
@@ -25,7 +27,6 @@ export function connect(deviceName, token) {
         resolve(client);
       });
       client.on('error', function (err) {
-        logError('Publisher error', err);
         reject(err);
       });
     }
@@ -36,12 +37,12 @@ export function connect(deviceName, token) {
 }
 
 export function subscribe(client, topic) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     client.subscribe(topic);
 
     client.on('message', function (t, payload) {
       if (topic === t) {
-        var p = JSON.parse(payload.toString());
+        const p: IPayload = JSON.parse(payload.toString());
         resolve(p)
       }
     });

@@ -105,6 +105,26 @@ CA_CERT_FILE=../ca-certificates/ca.crt
 MONGO_DB_URL=mongodb://test:test@00000000.mlab.com:27490/someName
 MONGO_DB_NAME=someName
 ```
+## Demo
+
+To run the demo, you need to start an instance of Redis and configure it in your environment. For convenience, we have included a `docker-compose.yml` file so that you can easily run a local instance. Use the following commands in your terminal:
+
+```
+cd examples
+docker-compose up
+```
+
+(Of course, this assumes you have installed Docker and Docker Compose.)
+
+Once Redis is running, you can use the following commands to run the demo (in another terminal):
+
+```
+cd examples
+npm install
+npm run demo
+```
+
+You should see a series of console logs. After 3 seconds, you should see that the mobile device requested and received apples. After a few more seconds, you should see that the mobile device requests "more apples" (literally) and gets two sets: 1) from a simple handler and 2) from a db-connected handler. In all, the client should have received 9 apples of different colers.
 
 ## Scalability
 

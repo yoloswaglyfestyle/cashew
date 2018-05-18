@@ -1,0 +1,24 @@
+{
+  "name": "cashew-examples",
+  "version": "0.0.0",
+  "description": "A few examples to help you get started with Cashew.",
+  "engineStrict": true,
+  "engines": {
+    "node": ">= 8.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "~8.10.10",
+    "ts-node": "^6.0.3",
+    "typescript": "~2.8.3"
+  },
+  "scripts": {
+    "demo": "ts-node examples/demo.ts"
+  },
+  "author": "Byron Sommardahl <byron@acklenavenue.com>",
+  "dependencies": {
+    "dotenv": "^5.0.1",
+    "jsonwebtoken": "^8.2.1",
+    "mqtt": "^2.18.0",
+    "tslib": "~1.9.0"
+  }
+}

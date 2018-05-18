@@ -1,5 +1,3 @@
-var fs = require('fs');
-var path = require('path');
 import { authenticateWithJWT, authorizeSubscribe, authorizePublish } from './auth';
 import { logInfo, logError } from './logger';
 import * as aedesPersistenceRedis from 'aedes-persistence-redis';
@@ -54,16 +52,15 @@ aedes.on('subscribe', function (subscriptions, client) {
   }))
 });
 
-export function startBroker(cb) {
-  const sslOptions = {
-    key: fs.readFileSync(path.join(__dirname, '../', process.env.TLS_KEY_FILE)),
-    cert: fs.readFileSync(path.join(__dirname, '../', process.env.TLS_CERT_FILE))
+export function connect(options, cb) {
+  //assert on missing props
+  const tslOptions = {
+    key: options.keyFile,
+    cert: options.certFile
   };
-  var server = require('tls').createServer(sslOptions, aedes.handle)
-  var port = process.env.BROKER_PORT;
-  server.listen(port, function () {
-    logInfo('Broker listening on port', port)
+  var server = require('tls').createServer(tslOptions, aedes.handle)
+  server.listen(options.port, function () {
+    logInfo('Broker listening on port ', options.port)
     cb();
   })
-
 }
