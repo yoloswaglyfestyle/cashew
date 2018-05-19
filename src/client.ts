@@ -1,14 +1,12 @@
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const path = require('path');
 const mqtt = require('mqtt');
 import { MqttClient } from 'mqtt';
 import { IPayload } from '../src/IPayload';
 
 const defaultOptions = {
-  key: fs.readFileSync(path.join(__dirname, process.env.TLS_KEY_FILE)),
-  cert: fs.readFileSync(path.join(__dirname, process.env.TLS_CERT_FILE)),
-  ca: fs.readFileSync(path.join(__dirname, process.env.CA_CERT_FILE)),
+  key: false,
+  cert: false,
+  ca: false,
   host: 'localhost',
   port: process.env.BROKER_PORT,
   protocol: 'mqtts',
