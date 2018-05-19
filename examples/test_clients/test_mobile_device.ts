@@ -1,9 +1,9 @@
-import { connect, subscribe } from '../clientHelper';
+import { connect, subscribe } from '../../src/client';
 import { MqttClient } from 'mqtt';
 
-var jwt = require('jsonwebtoken');
+let jwt = require('jsonwebtoken');
 const userId = 139871238127389;
-var token = jwt.sign({ user_id: userId }, process.env.JWT_SECRET);
+let token = jwt.sign({ user_id: userId }, process.env.JWT_SECRET);
 
 export function startMobileDevice() {
 
@@ -14,7 +14,7 @@ export function startMobileDevice() {
         setTimeout(() => {
           client.publish('get_more_apples', JSON.stringify({ user_id: userId }));
         }, 8000);
-      }, 3000);
+      },         3000);
 
       const topic = `${userId}/got_apples`
       subscribe(client, topic)

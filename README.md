@@ -9,22 +9,43 @@ npm i https://github.com/bsommardahl/cashew
 ```
 ### Getting Started
 
-```javascript 
-import { connect } from 'cashew';
+#### The Broker
 
-connect({
+```javascript 
+import { start } from 'cashew';
+import fs from 'fs';
+import path from 'path';
+
+start({
   port: process.env.BROKER_PORT,
   keyFile: fs.readFileSync(path.join(__dirname, process.env.TLS_KEY_FILE)),
   certFile: fs.readFileSync(path.join(__dirname, process.env.TLS_CERT_FILE)),  
 }, () => {
-  //celebrate!
+  console.log("Cashew running on port " + process.env.BROKER_PORT);
+   
 });
+```
+#### The Client
+
+```javascript
+import { subscribe } from 'cashew';
+
+connect('some device or handler id', getHandlerToken())
+  .then((client: MqttClient) => {
+    subscribe(client, 'get_apples')
+      .then((p: IPayload) => {
+        const responsePayload = JSON.stringify(['red', 'yellow', 'blue']);
+        client.publish(
+          `${p.user_id}/got_apples`,
+          responsePayload)
+      });
+  });
 ```
 See more examples in our [demo](https://github.com/bsommardahl/cashew/tree/master/examples).
 
 ## Setup
 
-Prereq's:
+Demo Prereq's:
 - Redis Db (at least one)
 - Mongo Db
 - Loggly Account

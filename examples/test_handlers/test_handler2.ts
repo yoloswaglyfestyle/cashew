@@ -1,5 +1,5 @@
-import { connect, subscribe, getHandlerToken } from '../clientHelper';
 import { MqttClient } from 'mqtt';
+import { connect, getHandlerToken, subscribe } from '../../src/client';
 import { IPayload } from '../../src/IPayload';
 
 export function startHandler2() {

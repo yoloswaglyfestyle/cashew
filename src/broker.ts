@@ -21,9 +21,9 @@ const persistence = aedesPersistenceRedis({
   }
 })
 
-export function connect(options, cb) {
+export function start(options, cb) {
 
-  const broker = aedes({ persistence, mq })
+  const broker = aedes({ persistence, mq });
 
   broker.authenticate = options.authenticate || authenticateWithJWT();
   broker.authorizeSubscribe = options.authorizeSubscribe || authorizeSubscribe();
@@ -59,7 +59,7 @@ export function connect(options, cb) {
     key: options.keyFile,
     cert: options.certFile
   };
-  var server = require('tls').createServer(tslOptions, broker.handle)
+  let server = require('tls').createServer(tslOptions, broker.handle)
   server.listen(options.port, function () {
     options.logger.log('Broker listening on port ', options.port)
     cb();

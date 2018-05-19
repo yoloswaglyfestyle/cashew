@@ -9,7 +9,7 @@
   "main": "build/src/index.js",
   "files": [
     "build"
-  ],  
+  ],
   "devDependencies": {
     "@types/jest": "~22.2.3",
     "@types/node": "~8.10.10",
@@ -39,6 +39,7 @@
     "aedes-persistence-redis": "^5.1.0",
     "dotenv": "^5.0.1",
     "jsonwebtoken": "^8.2.1",
+    "mqtt": "^2.18.0",
     "mqemitter-redis": "^2.3.0",
     "tslib": "~1.9.0",
     "winston-loggly-bulk": "^2.0.2"
