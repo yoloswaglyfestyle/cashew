@@ -17,5 +17,6 @@ const startClientsAndHandlers = () => {
 connect({
   port: process.env.BROKER_PORT,
   keyFile: fs.readFileSync(path.join(__dirname, process.env.TLS_KEY_FILE)),
-  certFile: fs.readFileSync(path.join(__dirname, process.env.TLS_CERT_FILE))
+  certFile: fs.readFileSync(path.join(__dirname, process.env.TLS_CERT_FILE)),
+  logger: console,
 }, startClientsAndHandlers);

@@ -1,11 +1,15 @@
 {
   "name": "cashew",
-  "version": "0.0.0",
-  "description": "Backend for VaultWallet.",
+  "version": "0.0.1",
+  "description": "Cashew is a real-time communications backend for connected applications.",
   "engineStrict": true,
   "engines": {
     "node": ">= 8.9.0"
   },
+  "main": "build/src/index.js",
+  "files": [
+    "build"
+  ],  
   "devDependencies": {
     "@types/jest": "~22.2.3",
     "@types/node": "~8.10.10",
@@ -19,6 +23,7 @@
     "typescript": "~2.8.3"
   },
   "scripts": {
+    "prepare": "npm run build",
     "clean": "rimraf coverage build tmp",
     "build": "tsc -p tsconfig.release.json",
     "watch": "tsc -w -p tsconfig.release.json",
@@ -30,7 +35,7 @@
   },
   "author": "Byron Sommardahl <byron@acklenavenue.com>",
   "dependencies": {
-    "aedes": "^0.34.0",
+    "aedes": "git+https://github.com/bsommardahl/aedes.git",
     "aedes-persistence-redis": "^5.1.0",
     "dotenv": "^5.0.1",
     "jsonwebtoken": "^8.2.1",

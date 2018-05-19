@@ -12,7 +12,7 @@
     "typescript": "~2.8.3"
   },
   "scripts": {
-    "demo": "ts-node examples/demo.ts"
+    "demo": "ts-node ./demo.ts"
   },
   "author": "Byron Sommardahl <byron@acklenavenue.com>",
   "dependencies": {

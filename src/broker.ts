@@ -1,7 +1,8 @@
 import { authenticateWithJWT, authorizeSubscribe, authorizePublish } from './auth';
-import { logInfo, logError } from './logger';
 import * as aedesPersistenceRedis from 'aedes-persistence-redis';
 import * as mqEmitterRedis from 'mqemitter-redis';
+const aedes = require('aedes');
+import { ISubscription } from 'mqtt-packet';
 
 const mq = mqEmitterRedis({
   port: process.env.REDIS_MQ_PORT,
@@ -20,47 +21,47 @@ const persistence = aedesPersistenceRedis({
   }
 })
 
-const aedes = require('aedes')({ persistence, mq })
-
-aedes.authenticate = authenticateWithJWT();
-aedes.authorizeSubscribe = authorizeSubscribe();
-aedes.authorizePublish = authorizePublish();
-
-aedes.on('client', function (client) {
-  logInfo('New connection: ', client.id);
-});
-
-aedes.on('clientDisconnect', function (client) {
-  logInfo('Disconnected connection: ', client.id);
-});
-
-aedes.on('clientError', function (_client, err) {
-  logError("Client Error", err);
-});
-
-aedes.on('connectionError', function (_client, err) {
-  logError("Connection Error", err);
-});
-
-aedes.on('publish', function (packet) {
-  logInfo('Published', packet.topic, packet.payload.toString());
-});
-
-aedes.on('subscribe', function (subscriptions, client) {
-  subscriptions.forEach((sub => {
-    logInfo('Subscribed', sub.topic, client.id);
-  }))
-});
-
 export function connect(options, cb) {
-  //assert on missing props
+
+  const broker = aedes({ persistence, mq })
+
+  broker.authenticate = options.authenticate || authenticateWithJWT();
+  broker.authorizeSubscribe = options.authorizeSubscribe || authorizeSubscribe();
+  broker.authorizePublish = options.authorizePublish || authorizePublish();
+
+  broker.on('client', function (client) {
+    options.logger.log('New connection: ', client.id);
+  });
+
+  broker.on('clientDisconnect', function (client) {
+    options.logger.log('Disconnected connection: ', client.id);
+  });
+
+  broker.on('clientError', function (_client, err) {
+    options.logger.error("Client Error", err);
+  });
+
+  broker.on('connectionError', function (_client, err) {
+    options.logger.error("Connection Error", err);
+  });
+
+  broker.on('publish', function (packet) {
+    options.logger.log('Published', packet.topic, packet.payload.toString());
+  });
+
+  broker.on('subscribe', function (subscriptions: ISubscription[], client) {
+    subscriptions.forEach((sub => {
+      options.logger.log('Subscribed', sub.topic, client.id);
+    }))
+  });
+
   const tslOptions = {
     key: options.keyFile,
     cert: options.certFile
   };
-  var server = require('tls').createServer(tslOptions, aedes.handle)
+  var server = require('tls').createServer(tslOptions, broker.handle)
   server.listen(options.port, function () {
-    logInfo('Broker listening on port ', options.port)
+    options.logger.log('Broker listening on port ', options.port)
     cb();
   })
 }
