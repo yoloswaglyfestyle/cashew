@@ -5,23 +5,31 @@ const mqtt = require('mqtt');
 import { MqttClient } from 'mqtt';
 import { IPayload } from '../src/IPayload';
 
-export function connect(deviceName, token) {
+const defaultOptions = {
+  key: fs.readFileSync(path.join(__dirname, process.env.TLS_KEY_FILE)),
+  cert: fs.readFileSync(path.join(__dirname, process.env.TLS_CERT_FILE)),
+  ca: fs.readFileSync(path.join(__dirname, process.env.CA_CERT_FILE)),
+  host: 'localhost',
+  port: process.env.BROKER_PORT,
+  protocol: 'mqtts',
+  clientId: `device_${Math.random().toString(16).substr(2, 8)}`,
+};
+
+export function connect(token, options?) {
+  const opts = {...defaultOptions, options};
   return new Promise((resolve, reject) => {
     try {
-      const key = fs.readFileSync(path.join(__dirname, process.env.TLS_KEY_FILE));
-      const cert = fs.readFileSync(path.join(__dirname, process.env.TLS_CERT_FILE));
-      const ca = fs.readFileSync(path.join(__dirname, process.env.CA_CERT_FILE));
       const client: MqttClient = mqtt.connect({
-        host: 'localhost',
-        port: process.env.BROKER_PORT,
-        protocol: 'mqtts',
-        key,
-        cert,
-        ca,
+        host: opts.host,
+        port: opts.port,
+        protocol: opts.protocol,
+        key: opts.key,
+        cert: opts.cert,
+        ca: opts.ca,
         username: 'JWT',
         password: token,
         rejectUnauthorized: false,
-        clientId: `${deviceName}_${Math.random().toString(16).substr(2, 8)}`,
+        clientId: opts.clientId,
       });
       client.on('connect', function () {
         resolve(client);

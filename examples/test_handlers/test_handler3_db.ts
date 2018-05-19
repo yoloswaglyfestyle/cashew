@@ -5,7 +5,7 @@ import { IPayload } from '../../src/IPayload';
 const MongoClient = require('mongodb').MongoClient;
 
 export function startHandler3() {
-  connect('handler2', getHandlerToken())
+  connect(getHandlerToken())
     .then((client: MqttClient) => {
       subscribe(client, 'get_more_apples')
         .then((p: IPayload) =>
@@ -17,10 +17,10 @@ export function startHandler3() {
                 .find({}).toArray(function (err, docs) {
                   assert.equal(null, err);
                   const apples = docs.map(x => x.color);
-                  client.publish(`${p.user_id}/got_apples`, JSON.stringify(apples))
+                  client.publish(`${p.user_id}/got_apples`, JSON.stringify(apples));
                   mongo.close();
                 });
-            })
+            }),
         );
     });
 }

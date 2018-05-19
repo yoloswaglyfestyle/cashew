@@ -13,8 +13,8 @@ npm i https://github.com/bsommardahl/cashew
 
 ```javascript 
 import { start } from 'cashew';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 start({
   port: process.env.BROKER_PORT,
