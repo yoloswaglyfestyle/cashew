@@ -1,8 +1,16 @@
-const jwt = require('jsonwebtoken');
-const mqtt = require('mqtt');
-import { MqttClient } from 'mqtt';
+import * as jwt from 'jsonwebtoken';
+import { connect as mqttConnect, MqttClient } from 'mqtt';
 import { IPayload } from '../src/IPayload';
 
+interface IConnectOptions {
+  key: Buffer[];
+  cert: Buffer[];
+  ca: Buffer[];
+  host: string;
+  port: number;
+  protocol: string;
+  clientId: string;
+}
 const defaultOptions = {
   key: false,
   cert: false,
@@ -13,11 +21,13 @@ const defaultOptions = {
   clientId: `device_${Math.random().toString(16).substr(2, 8)}`,
 };
 
-export function connect(token, options?) {
-  const opts = {...defaultOptions, options};
-  return new Promise((resolve, reject) => {
+export function connect(token: string, options?: IConnectOptions): Promise<MqttClient> {
+  const opts = {...defaultOptions, ...options};
+
+  return new Promise((resolve: (value?: MqttClient | PromiseLike<MqttClient>) => void,
+                      reject: (reason?: Error) => void) => {
     try {
-      const client: MqttClient = mqtt.connect({
+      const client: MqttClient = mqttConnect({
         host: opts.host,
         port: opts.port,
         protocol: opts.protocol,
@@ -29,11 +39,11 @@ export function connect(token, options?) {
         rejectUnauthorized: false,
         clientId: opts.clientId,
       });
-      client.on('connect', function () {
+      client.on('connect', () => {
         resolve(client);
       });
-      client.on('error', function (err) {
-        reject(err);
+      client.on('error', (err: any) => {
+        reject(new Error(err));
       });
     } catch (err) {
       reject(err);
@@ -41,11 +51,11 @@ export function connect(token, options?) {
   });
 }
 
-export function subscribe(client, topic) {
-  return new Promise((resolve, _reject) => {
+export function subscribe(client: MqttClient, topic: string) {
+  return new Promise((resolve: (value?: IPayload | PromiseLike<IPayload>) => void) => {
     client.subscribe(topic);
 
-    client.on('message', function (t, payload) {
+    client.on('message', (t: string, payload: Buffer[]) => {
       if (topic === t) {
         const p: IPayload = JSON.parse(payload.toString());
         resolve(p);
