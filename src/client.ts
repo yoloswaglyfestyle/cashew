@@ -1,27 +1,16 @@
 import * as jwt from 'jsonwebtoken';
 import { connect as mqttConnect, MqttClient } from 'mqtt';
-import { IPayload } from '../src/IPayload';
+import { IClientOptions, IPayload } from '../src/types';
 
-interface IConnectOptions {
-  key: Buffer[];
-  cert: Buffer[];
-  ca: Buffer[];
-  host: string;
-  port: number;
-  protocol: string;
-  clientId: string;
-}
-const defaultOptions = {
-  key: false,
-  cert: false,
-  ca: false,
-  host: 'localhost',
-  port: process.env.BROKER_PORT,
-  protocol: 'mqtts',
-  clientId: `device_${Math.random().toString(16).substr(2, 8)}`,
-};
+export function connect(token: string, options?: IClientOptions): Promise<MqttClient> {
 
-export function connect(token: string, options?: IConnectOptions): Promise<MqttClient> {
+  const defaultOptions = {
+    host: 'localhost',
+    port: process.env.BROKER_PORT,
+    protocol: 'mqtts',
+    clientId: `device_${new Date().getTime()}`,
+  };
+
   const opts = {...defaultOptions, ...options};
 
   return new Promise((resolve: (value?: MqttClient | PromiseLike<MqttClient>) => void,
@@ -31,9 +20,7 @@ export function connect(token: string, options?: IConnectOptions): Promise<MqttC
         host: opts.host,
         port: opts.port,
         protocol: opts.protocol,
-        key: opts.key,
-        cert: opts.cert,
-        ca: opts.ca,
+        keys: opts.keys,
         username: 'JWT',
         password: token,
         rejectUnauthorized: false,
@@ -42,8 +29,8 @@ export function connect(token: string, options?: IConnectOptions): Promise<MqttC
       client.on('connect', () => {
         resolve(client);
       });
-      client.on('error', (err: any) => {
-        reject(new Error(err));
+      client.on('error', (err: Error) => {
+        reject(err);
       });
     } catch (err) {
       reject(err);

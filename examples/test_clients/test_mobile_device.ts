@@ -1,18 +1,15 @@
+import * as jwt from 'jsonwebtoken';
 import { MqttClient } from 'mqtt';
 import { connect, subscribe } from '../../src/client';
-const fs = require('fs');
-const path = require('path');
-const jwt = require('jsonwebtoken');
+import { ITLSKeys } from '../../src/types';
 
 const userId = 139871238127389;
 const token = jwt.sign({ user_id: userId }, process.env.JWT_SECRET);
 
-export function startMobileDevice() {
+export function startMobileDevice(keys: ITLSKeys) {
 
   const options = {
-    key: fs.readFileSync(path.join(__dirname, '../', process.env.TLS_KEY_FILE)),
-    cert: fs.readFileSync(path.join(__dirname, '../', process.env.TLS_CERT_FILE)),
-    ca: fs.readFileSync(path.join(__dirname, '../', process.env.CA_CERT_FILE)),
+    ...keys,
     clientId: 'mobile',
   };
   connect(token, options)

@@ -1,5 +1,5 @@
 import {start} from './broker';
 import {connect, subscribe } from './client';
-import {IPayload} from './IPayload';
+import {IPayload} from './types';
 
 export { start, connect, subscribe, IPayload };
