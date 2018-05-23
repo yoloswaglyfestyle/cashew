@@ -72,4 +72,9 @@ export function start(opts: IBrokerOptions, cb: () => void) {
     options.logger.log('Broker listening on port ', options.port);
     cb();
   });
+
+  process.on('uncaughtException', (exception) => {
+    options.logger.error(exception);
+  });
+
 }
