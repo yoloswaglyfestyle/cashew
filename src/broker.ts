@@ -51,9 +51,8 @@ export function start(opts: IBrokerOptions, cb: () => void) {
   ? tls.createServer(options.keys, broker.handle)
   : net.createServer(broker.handle);
 
-  server.listen(options.port, () => {
-    options.logger.log('Broker listening on port ', options.port);
-    cb();
+  server.listen(options.port, () => {    
+    if(cb) cb();
   });
 
   process.on('uncaughtException', (exception) => {
