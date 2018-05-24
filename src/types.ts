@@ -12,6 +12,8 @@ export interface IBrokerOptions {
   keys?: ITLSKeys;
   port?: number;
   logger?: Console;
+  mq?: any;
+  persistence?: any;
 }
 
 export interface IClientOptions {

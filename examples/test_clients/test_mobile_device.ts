@@ -1,15 +1,13 @@
 import * as jwt from 'jsonwebtoken';
 import { MqttClient } from 'mqtt';
 import { connect, subscribe } from '../../src/client';
-import { ITLSKeys } from '../../src/types';
 
 const userId = 139871238127389;
-const token = jwt.sign({ user_id: userId }, process.env.JWT_SECRET);
+const token = jwt.sign({ user_id: userId }, process.env.JWT_SECRET || 'shhhhh');
 
-export function startMobileDevice(keys: ITLSKeys) {
+export function startMobileDevice() {
 
-  const options = {
-    ...keys,
+  const options = {    
     clientId: 'mobile',
   };
   connect(token, options)

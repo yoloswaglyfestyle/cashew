@@ -1,27 +1,9 @@
 import aedes = require('aedes');
-import * as aedesPersistenceRedis from 'aedes-persistence-redis';
-import * as mqEmitterRedis from 'mqemitter-redis';
 import { ISubscription } from 'mqtt-packet';
 import * as tls from 'tls';
+import * as net from 'net';
 import { authenticateWithJWT, authorizePublish, authorizeSubscribe } from './auth';
 import { IBrokerOptions } from './types';
-
-const mq = mqEmitterRedis({
-  port: process.env.REDIS_MQ_PORT,
-  host: process.env.REDIS_MQ_HOST,
-  db: 0,
-});
-
-const persistence = aedesPersistenceRedis({
-  port: process.env.REDIS_DB_POST,
-  host: process.env.REDIS_DB_HOST,
-  family: 4,
-  db: 0,
-  maxSessionDelivery: 100,
-  packetTTL: () => {
-    return 10;
-  },
-});
 
 const defaultOptions = {
   authenticate: authenticateWithJWT,
@@ -29,8 +11,6 @@ const defaultOptions = {
   authorizeSubscribe,
   logger: console,
   port: 8883,
-  mq,
-  persistence,
 };
 
 export function start(opts: IBrokerOptions, cb: () => void) {
@@ -67,7 +47,10 @@ export function start(opts: IBrokerOptions, cb: () => void) {
     }));
   });
 
-  const server = tls.createServer(options.keys, broker.handle);
+  const server = options.keys 
+  ? tls.createServer(options.keys, broker.handle)
+  : net.createServer(broker.handle);
+
   server.listen(options.port, () => {
     options.logger.log('Broker listening on port ', options.port);
     cb();

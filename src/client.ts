@@ -6,8 +6,8 @@ export function connect(token: string, options?: IClientOptions): Promise<MqttCl
 
   const defaultOptions = {
     host: 'localhost',
-    port: process.env.BROKER_PORT,
-    protocol: 'mqtts',
+    port: process.env.BROKER_PORT || '8883',
+    protocol: 'mqtt',
     clientId: `device_${new Date().getTime()}`,
   };
 
@@ -57,5 +57,5 @@ export function getHandlerToken() {
       name: 'test_handler3r',
       ip: '1.2.3.4',
     },
-  },              process.env.JWT_SECRET);
+  },              process.env.JWT_SECRET || 'shhhhh');
 }

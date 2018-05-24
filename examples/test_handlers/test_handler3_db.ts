@@ -1,11 +1,11 @@
 import * as assert from 'assert';
 import { MqttClient } from 'mqtt';
 import { connect, getHandlerToken, subscribe } from '../../src/client';
-import { IPayload, ITLSKeys } from '../../src/types';
+import { IPayload } from '../../src/types';
 const MongoClient = require('mongodb').MongoClient;
 
-export function startHandler3(keys: ITLSKeys) {
-  connect(getHandlerToken(), {keys, clientId: 'handler3'})
+export function startHandler3() {
+  connect(getHandlerToken(), { clientId: 'handler3'})
     .then((client: MqttClient) => {
       subscribe(client, 'get_more_apples')
         .then((p: IPayload) =>

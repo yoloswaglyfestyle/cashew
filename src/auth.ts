@@ -44,7 +44,7 @@ export function authenticateWithJWT(
 
     if (username !== 'JWT') { return done(null, false); }
 
-    jwt.verify(password.toString(), process.env.JWT_SECRET, (err, profile) => {
+    jwt.verify(password.toString(), process.env.JWT_SECRET || 'shhhhh', (err, profile) => {
       if (err) {
         const BAD_USERNAME_OR_PASSWORD = 4;
         const e: Error & { returnCode: number } = {

@@ -1,9 +1,9 @@
 import { MqttClient } from 'mqtt';
 import { connect, getHandlerToken, subscribe } from '../../src/client';
-import { IPayload, ITLSKeys } from '../../src/types';
+import { IPayload} from '../../src/types';
 
-export function startHandler1(keys: ITLSKeys) {
-  connect(getHandlerToken(), {keys, clientId: 'handler1'})
+export function startHandler1() {
+  connect(getHandlerToken(), { clientId: 'handler1'})
     .then((client: MqttClient) => {
       subscribe(client, 'get_apples')
         .then((p: IPayload) => {
