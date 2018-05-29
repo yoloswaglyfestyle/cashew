@@ -35,7 +35,7 @@
   },
   "author": "Byron Sommardahl <byron@acklenavenue.com>",
   "dependencies": {
-    "aedes": "git+https://github.com/bsommardahl/aedes.git",
+    "aedes": "^0.34.1",
     "aedes-persistence-redis": "^5.1.0",
     "dotenv": "^5.0.1",
     "jsonwebtoken": "^8.2.1",
