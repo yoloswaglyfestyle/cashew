@@ -18,7 +18,7 @@ const defaultOptions = {
   debug: false,
 };
 
-export function start(opts: IBrokerOptions, cb: () => void) {
+export function start(opts: IBrokerOptions, cb: (broker: any) => void) {
   const options = { ...defaultOptions, ...opts };
   const broker = aedes({ persistence: options.persistence, mq: options.mq });
 
@@ -60,7 +60,7 @@ export function start(opts: IBrokerOptions, cb: () => void) {
 
   server.listen(options.port, () => {
     if (cb) {
-      cb();
+      cb(broker);
     }
   });
 
