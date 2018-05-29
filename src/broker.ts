@@ -1,8 +1,12 @@
 import aedes = require('aedes');
 import { ISubscription } from 'mqtt-packet';
-import * as tls from 'tls';
 import * as net from 'net';
-import { authenticateWithJWT, authorizePublish, authorizeSubscribe } from './auth';
+import * as tls from 'tls';
+import {
+  authenticateWithJWT,
+  authorizePublish,
+  authorizeSubscribe,
+} from './auth';
 import { IBrokerOptions } from './types';
 
 const defaultOptions = {
@@ -11,21 +15,22 @@ const defaultOptions = {
   authorizeSubscribe,
   logger: console,
   port: 8883,
+  debug: false,
 };
 
 export function start(opts: IBrokerOptions, cb: () => void) {
-  const options = {...defaultOptions, ...opts};
+  const options = { ...defaultOptions, ...opts };
   const broker = aedes({ persistence: options.persistence, mq: options.mq });
 
   broker.authenticate = options.authenticate;
   broker.authorizeSubscribe = options.authorizeSubscribe;
   broker.authorizePublish = options.authorizePublish;
 
-  broker.on('client', (client) => {
+  broker.on('client', client => {
     options.logger.log('New connection: ', client.id);
   });
 
-  broker.on('clientDisconnect', (client) => {
+  broker.on('clientDisconnect', client => {
     options.logger.log('Disconnected connection: ', client.id);
   });
 
@@ -37,26 +42,29 @@ export function start(opts: IBrokerOptions, cb: () => void) {
     options.logger.error('Connection Error', err);
   });
 
-  broker.on('publish', (packet) => {
-    options.logger.log('Published', packet.topic, packet.payload.toString());
+  if (options.debug) {
+    broker.on('publish', packet => {
+      options.logger.log('Published', packet.topic, packet.payload.toString());
+    });
+
+    broker.on('subscribe', (subscriptions: ISubscription[], client) => {
+      subscriptions.forEach((sub: ISubscription) => {
+        options.logger.log('Subscribed', sub.topic, client.id);
+      });
+    });
+  }
+
+  const server = options.keys
+    ? tls.createServer(options.keys, broker.handle)
+    : net.createServer(broker.handle);
+
+  server.listen(options.port, () => {
+    if (cb) {
+      cb();
+    }
   });
 
-  broker.on('subscribe', (subscriptions: ISubscription[], client) => {
-    subscriptions.forEach(((sub: ISubscription) => {
-      options.logger.log('Subscribed', sub.topic, client.id);
-    }));
-  });
-
-  const server = options.keys 
-  ? tls.createServer(options.keys, broker.handle)
-  : net.createServer(broker.handle);
-
-  server.listen(options.port, () => {    
-    if(cb) cb();
-  });
-
-  process.on('uncaughtException', (exception) => {
+  process.on('uncaughtException', exception => {
     options.logger.error(exception);
   });
-
 }

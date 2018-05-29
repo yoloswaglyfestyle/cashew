@@ -14,6 +14,7 @@ export interface IBrokerOptions {
   logger?: Console;
   mq?: any;
   persistence?: any;
+  debug?: boolean;
 }
 
 export interface IClientOptions {
