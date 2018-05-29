@@ -1,7 +1,10 @@
 import aedes = require('aedes');
+import * as http from 'http';
 import { ISubscription } from 'mqtt-packet';
-import * as net from 'net';
-import * as tls from 'tls';
+// import * as net from 'net';
+// import * as tls from 'tls';
+import * as webSockets from 'websocket-stream';
+
 import {
   authenticateWithJWT,
   authorizePublish,
@@ -14,7 +17,7 @@ const defaultOptions = {
   authorizePublish,
   authorizeSubscribe,
   logger: console,
-  port: 8883,
+  port: 1883,
   debug: false,
 };
 
@@ -34,31 +37,39 @@ export function start(opts: IBrokerOptions, cb: (broker: any) => void) {
     options.logger.log('Disconnected connection: ', client.id);
   });
 
-  broker.on('clientError', (_, err) => {
-    options.logger.error('Client Error', err);
+  broker.on('clientError', (client, err) => {
+    options.logger.error('client error', client.id, err.message, err.stack);
   });
 
-  broker.on('connectionError', (_, err) => {
-    options.logger.error('Connection Error', err);
+  broker.on('connectionError', (client, err) => {
+    options.logger.error('connection error', client.id, err.message, err.stack);
   });
 
-  if (options.debug) {
-    broker.on('publish', packet => {
-      options.logger.log('Published', packet.topic, packet.payload.toString());
-    });
+  broker.on('publish', (packet, client) => {
+    if (client) {
+      options.logger.log('Message from client', client.id, packet.topic);
+    }
+  });
 
-    broker.on('subscribe', (subscriptions: ISubscription[], client) => {
-      subscriptions.forEach((sub: ISubscription) => {
-        options.logger.log('Subscribed', sub.topic, client.id);
-      });
-    });
-  }
+  broker.on('subscribe', (subscriptions: ISubscription[], client) => {
+    if (client) {
+      options.logger.log('subscribe from client', subscriptions, client.id);
+    }
+  });
 
-  const server = options.keys
-    ? tls.createServer(options.keys, broker.handle)
-    : net.createServer(broker.handle);
+  // const server = options.keys
+  //   ? tls.createServer(options.keys, broker.handle)
+  //   : net.createServer(broker.handle);
 
-  server.listen(options.port, () => {
+  const webServer = http.createServer();
+  webSockets.createServer(
+    {
+      server: webServer,
+    },
+    broker.handle,
+  );
+
+  webServer.listen(options.port, () => {
     if (cb) {
       cb(broker);
     }

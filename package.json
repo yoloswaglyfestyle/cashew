@@ -1,6 +1,6 @@
 {
   "name": "cashew-mqtt",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description":
     "Cashew is a real-time communications backend for connected applications.",
   "engineStrict": true,
@@ -42,6 +42,7 @@
     "mqtt": "^2.18.0",
     "mqtt-packet": "^5.6.0",
     "tslib": "^1.9.1",
+    "websocket-stream": "^5.1.2",
     "winston-loggly-bulk": "^2.0.2"
   }
 }

@@ -6,9 +6,14 @@ export function connect(
   token: string,
   options?: IClientOptions,
 ): Promise<IClientConnection> {
+  process.on('uncaughtException', exception => {
+    console.error(exception);
+    throw exception;
+  });
+
   const defaultOptions: IClientOptions = {
-    host: 'localhost',
-    port: process.env.BROKER_PORT || '8883',
+    host: process.env.BROKER_HOST || '0.0.0.0',
+    port: process.env.BROKER_PORT || '1883',
     protocol: 'mqtt',
     clientId: `device_${new Date().getTime()}`,
     parse: JSON.parse,
@@ -24,16 +29,18 @@ export function connect(
       reject: (reason?: Error) => void,
     ) => {
       try {
-        const client: MqttClient = mqttConnect({
-          host: opts.host,
-          port: opts.port,
-          protocol: opts.protocol,
-          keys: opts.keys,
-          username: 'JWT',
-          password: token,
-          rejectUnauthorized: false,
-          clientId: opts.clientId,
-        });
+        const client: MqttClient = mqttConnect(
+          `ws://${opts.host}:${opts.port}`,
+          {
+            //protocol: opts.protocol,
+            //keys: opts.keys,
+            username: 'JWT',
+            password: token,
+            rejectUnauthorized: false,
+            clientId: opts.clientId,
+          },
+        );
+
         client.on('connect', () => {
           const conn: IClientConnection = { client: client, options: opts };
           resolve(conn);
