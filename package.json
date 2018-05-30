@@ -1,14 +1,15 @@
 {
   "name": "cashew-mqtt",
-  "version": "0.1.12",
-  "description":
-    "Cashew is a real-time communications backend for connected applications.",
+  "version": "0.1.13",
+  "description": "Cashew is a real-time communications backend for connected applications.",
   "engineStrict": true,
   "engines": {
     "node": ">= 8.9.0"
   },
   "main": "build/src/index.js",
-  "files": ["build"],
+  "files": [
+    "build"
+  ],
   "devDependencies": {
     "@types/jest": "~22.2.3",
     "@types/node": "^8.10.17",
