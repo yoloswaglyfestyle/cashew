@@ -1,6 +1,6 @@
 {
   "name": "cashew-mqtt",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description":
     "Cashew is a real-time communications backend for connected applications.",
   "engineStrict": true,
@@ -38,6 +38,7 @@
     "aedes-persistence-redis": "^5.1.0",
     "dotenv": "^5.0.1",
     "jsonwebtoken": "^8.2.1",
+    "most": "^1.7.3",
     "mqemitter-redis": "^2.3.0",
     "mqtt": "^2.18.0",
     "mqtt-packet": "^5.6.0",

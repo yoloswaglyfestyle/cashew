@@ -5,7 +5,7 @@ const MongoClient = require('mongodb').MongoClient;
 
 export function startHandler3() {
   connect(getHandlerToken(), { clientId: 'handler3' }).then(conn => {
-    subscribe(conn, 'get_more_apples').then((p: IPayload) =>
+    subscribe(conn, 'get_more_apples').observe((p: IPayload) =>
       MongoClient.connect(
         process.env.MONGO_DB_URL,
         { useNewUrlParser: true },

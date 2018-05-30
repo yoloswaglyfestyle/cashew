@@ -1,6 +1,7 @@
 import * as jwt from 'jsonwebtoken';
+import { fromEvent } from 'most';
 import { connect as mqttConnect, MqttClient } from 'mqtt';
-import { IClientConnection, IClientOptions, IPayload } from '../src/types';
+import { IClientConnection, IClientOptions } from '../src/types';
 
 export function connect(
   token: string,
@@ -56,18 +57,17 @@ export function connect(
 }
 
 export function subscribe(connection: IClientConnection, topic: string) {
-  return new Promise(
-    (resolve: (value?: IPayload | PromiseLike<IPayload>) => void) => {
-      connection.client.subscribe(topic);
+  connection.client.subscribe(topic);
 
-      connection.client.on('message', (t: string, payload: Buffer[]) => {
-        if (topic === t) {
-          const p: IPayload = connection.options.parse(payload.toString());
-          resolve(p);
-        }
-      });
-    },
-  );
+  return fromEvent('message', connection.client)
+    .filter(ev => {
+      return ev[0] === topic;
+    })
+    .map(ev => {
+      const payloadStr = ev[1].toString();
+
+      return connection.options.parse(payloadStr);
+    });
 }
 
 export function getHandlerToken() {

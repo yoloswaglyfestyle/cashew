@@ -20,7 +20,7 @@ export function startMobileDevice() {
     }, 3000);
 
     const topic = `${userId}/got_apples`;
-    subscribe(conn, topic).then(apples => {
+    subscribe(conn, topic).observe(apples => {
       console.log('subscriber receiving', topic, apples);
     });
   });
