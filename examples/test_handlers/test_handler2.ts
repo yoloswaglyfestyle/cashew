@@ -1,12 +1,12 @@
-import { connect, getHandlerToken, subscribe } from '../../src/client';
-import { IPayload } from '../../src/types';
+import { connect, getHandlerToken, subscribe, publish } from '../../src/client';
 
 export function startHandler2() {
   connect(getHandlerToken(), { clientId: 'handler2' }).then(conn => {
-    subscribe(conn, 'get_more_apples').observe((p: IPayload) =>
-      conn.client.publish(
+    subscribe('+/get_more_apples', conn).observe((p: any) =>
+      publish(
         `${p.user_id}/got_apples`,
         JSON.stringify(['green', 'black', 'purple']),
+        conn
       ),
     );
   });

@@ -56,18 +56,45 @@ export function connect(
   );
 }
 
-export function subscribe(connection: IClientConnection, topic: string) {
+export interface ITopicResponse {
+  user_id?: string;
+  payload: any;
+}
+
+export function subscribe(topic: string, connection: IClientConnection) {
   connection.client.subscribe(topic);
 
   return fromEvent('message', connection.client)
     .filter(ev => {
-      return ev[0] === topic;
-    })
-    .map(ev => {
-      const payloadStr = ev[1].toString();
+      const messageTopicParts = ev[0].split('/');
+      const subscribeTopicParts = topic.split('/');
+      if (messageTopicParts.length !== subscribeTopicParts.length) {
+        return false;
+      }
+      const newMessageTopic = subscribeTopicParts.map((curr, index) => {
+        if (curr === "+") {
+          return "+";
+        }
+        else {
+          return messageTopicParts[index];
+        }
+      }).join("/");
 
-      return connection.options.parse(payloadStr);
+      return newMessageTopic === topic;
+    })
+    .map((ev): ITopicResponse => {
+      const topic = ev[0];
+      const payloadStr = ev[1].toString();
+      const payload = connection.options.parse(payloadStr);
+      const topicSegments = topic.split('/');
+      const response: ITopicResponse = { payload };
+      response.user_id = topicSegments[0];
+      return response;
     });
+}
+
+export function publish(topic: string, payload: any, connection: IClientConnection) {
+  connection.client.publish(topic, payload);
 }
 
 export function getHandlerToken() {

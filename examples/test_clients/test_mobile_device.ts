@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken';
-import { connect, subscribe } from '../../src/client';
+import { connect, subscribe, publish } from '../../src/client';
 
 const userId = 139871238127389;
 const token = jwt.sign({ user_id: userId }, process.env.JWT_SECRET || 'shhhhh');
@@ -10,17 +10,17 @@ export function startMobileDevice() {
   };
   connect(token, options).then(conn => {
     setTimeout(() => {
-      conn.client.publish('get_apples', JSON.stringify({ user_id: userId }));
+      publish(`${userId}/get_apples`, JSON.stringify({}), conn);
       setTimeout(() => {
-        conn.client.publish(
-          'get_more_apples',
-          JSON.stringify({ user_id: userId }),
-        );
+        publish(
+          `${userId}/get_more_apples`,
+          JSON.stringify({}),
+          conn);
       }, 8000);
     }, 3000);
 
     const topic = `${userId}/got_apples`;
-    subscribe(conn, topic).observe(apples => {
+    subscribe(topic, conn).observe(apples => {
       console.log('subscriber receiving', topic, apples);
     });
   });

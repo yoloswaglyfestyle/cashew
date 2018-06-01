@@ -1,11 +1,10 @@
 import * as assert from 'assert';
-import { connect, getHandlerToken, subscribe } from '../../src/client';
-import { IPayload } from '../../src/types';
+import { connect, getHandlerToken, subscribe, publish } from '../../src/client';
 const MongoClient = require('mongodb').MongoClient;
 
 export function startHandler3() {
   connect(getHandlerToken(), { clientId: 'handler3' }).then(conn => {
-    subscribe(conn, 'get_more_apples').observe((p: IPayload) =>
+    subscribe('+/get_more_apples', conn).observe((p: any) =>
       MongoClient.connect(
         process.env.MONGO_DB_URL,
         { useNewUrlParser: true },
@@ -21,9 +20,10 @@ export function startHandler3() {
             .toArray((findErr, docs) => {
               assert.equal(null, findErr);
               const apples = docs.map(x => x.color);
-              conn.client.publish(
+              publish(
                 `${p.user_id}/got_apples`,
                 JSON.stringify(apples),
+                conn
               );
               mongo.close();
             });

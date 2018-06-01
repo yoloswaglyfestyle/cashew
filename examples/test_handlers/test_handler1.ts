@@ -1,11 +1,10 @@
-import { connect, getHandlerToken, subscribe } from '../../src/client';
-import { IPayload } from '../../src/types';
+import { connect, getHandlerToken, subscribe, publish } from '../../src/client';
 
 export function startHandler1() {
   connect(getHandlerToken(), { clientId: 'handler1' }).then(conn => {
-    subscribe(conn, 'get_apples').observe((p: IPayload) => {
+    subscribe('+/get_apples', conn).observe((p: any) => {
       const responsePayload = JSON.stringify(['red', 'yellow', 'blue']);
-      conn.client.publish(`${p.user_id}/got_apples`, responsePayload);
+      publish(`${p.user_id}/got_apples`, responsePayload, conn);
     });
   });
 }

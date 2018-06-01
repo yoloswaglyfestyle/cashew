@@ -33,7 +33,7 @@ import { subscribe } from 'cashew';
 connect('some device or handler id', getHandlerToken())
   .then((client: MqttClient) => {
     subscribe(client, 'get_apples')
-      .then((p: IPayload) => {
+      .then((p: any) => {
         const responsePayload = JSON.stringify(['red', 'yellow', 'blue']);
         client.publish(
           `${p.user_id}/got_apples`,

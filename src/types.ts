@@ -1,9 +1,5 @@
 import { MqttClient } from 'mqtt';
 
-export interface IPayload {
-  user_id: string;
-}
-
 export interface ITLSKeys {
   key: Buffer;
   cert: Buffer;
