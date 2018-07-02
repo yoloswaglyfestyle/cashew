@@ -1,29 +1,64 @@
-// import { Delays, greeter } from '../src/main';
+import { start } from "../src/broker";
+import { connect } from "../src/client";
 
-// describe('greeter function', () => {
-//   // Read more about fake timers: http://facebook.github.io/jest/docs/en/timer-mocks.html#content
-//   jest.useFakeTimers();
+import * as jwt from "jsonwebtoken";
+import { connect, subscribe, publish } from "../src/client";
 
-//   const name: string = 'John';
+const userId = 139871238127389;
+const token = jwt.sign({ user_id: userId }, process.env.JWT_SECRET || "shhhhh");
 
-//   let hello: string;
+describe("The MQTT Broker", () => {
+  describe("When starting the broker", () => {
+    it("should start the broker up", finish => {
+      start({ logger: console }, (_, server) => {
+        server.close();
+        finish();
+      });
+    });
+    it("should accept connections", finish => {
+      start({ logger: console }, (_, server) => {
+        connect(
+          token,
+          {}
+        ).then(conn => {
+          console.log(conn);
+          server.close();
+          finish();
+        });
+      });
+    });
+    it("should not allow subscribing to another user's topic", finish => {
+      start({}, (broker, server) => {
+        broker.on("clientError", (client, err) => {
+          console.log(client);
+          console.log(err);
+          finish();
+        });
 
-//   // Act before assertions
-//   beforeAll(async () => {
-//     const p: Promise<string> = greeter(name);
-//     jest.runOnlyPendingTimers();
-//     hello = await p;
+        connect(
+          token,
+          {}
+        ).then(conn => {
+          subscribe("anotherUser/topic", conn);
+        });
+      });
+    });
+  });
+});
+
+// connect(token, options).then(conn => {
+//   setTimeout(() => {
+//     publish(`${userId}/get_apples`, JSON.stringify({}), conn);
+//     setTimeout(() => {
+//       publish(
+//         `${userId}/get_more_apples`,
+//         JSON.stringify({}),
+//         conn);
+//     }, 8000);
+//   }, 3000);
+
+//   const topic = `${userId}/got_apples`;
+//   subscribe(topic, conn).observe(apples => {
+//     console.log('subscriber receiving', topic, apples);
 //   });
-
-//   // Assert if setTimeout was called properly
-//   it('delays the greeting by 2 seconds', () => {
-//     expect(setTimeout).toHaveBeenCalledTimes(1);
-//     expect((setTimeout as Function as jest.Mock).mock.calls[0][1]).toBe(Delays.Long);
-//   });
-
-//   // Assert greeter result
-//   it('greets a user with `Hello, {name}` message', () => {
-//     expect(hello).toBe(`Hello, ${name}`);
-//   });
-
 // });

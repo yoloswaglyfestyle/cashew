@@ -1,12 +1,12 @@
 import { MqttClient } from 'mqtt';
 
-export interface ITLSKeys {
+interface ITLSKeys {
   key: Buffer;
   cert: Buffer;
   ca: Buffer;
 }
 
-export interface IBrokerOptions {
+interface IBrokerOptions {
   keys?: ITLSKeys;
   port?: string;
   logger?: Console;
@@ -15,7 +15,7 @@ export interface IBrokerOptions {
   debug?: boolean;
 }
 
-export interface IClientOptions {
+interface IClientOptions {
   keys?: ITLSKeys;
   host?: string;
   port?: string;
@@ -25,7 +25,7 @@ export interface IClientOptions {
   parse?: any;
 }
 
-export interface IClientConnection {
+interface IClientConnection {
   options: IClientOptions;
   client: MqttClient;
 }

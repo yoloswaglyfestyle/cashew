@@ -4,9 +4,7 @@
  */
 
 {
-  "extends": [
-    "tslint-microsoft-contrib"
-  ],
+  "extends": ["tslint:latest", "tslint-config-prettier", "tslint-immutable"],
   "rules": {
     "mocha-no-side-effect-code": false,
     "missing-jsdoc": false,
@@ -17,13 +15,7 @@
     "no-redundant-jsdoc": false,
     "no-any": false,
     "prefer-type-cast": false,
-    "trailing-comma": [ // https://palantir.github.io/tslint/rules/trailing-comma/
-      true,
-      {
-        "multiline": "always",
-        "singleline": "never"
-      }
-    ],
+    "trailing-comma": false,
     "typedef": [
       true,
       "parameter",
