@@ -1,4 +1,5 @@
-import aedes from "aedes";
+// import aedes from "aedes";
+const aedes = require("aedes");
 import * as http from "http";
 import { ISubscription } from "mqtt-packet";
 // import * as net from 'net';

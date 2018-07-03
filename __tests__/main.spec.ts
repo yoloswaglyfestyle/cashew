@@ -21,28 +21,27 @@ describe("The MQTT Broker", () => {
           token,
           {}
         ).then(conn => {
-          console.log(conn);
           server.close();
           finish();
         });
       });
     });
-    it("should not allow subscribing to another user's topic", finish => {
-      start({}, (broker, server) => {
-        broker.on("clientError", (client, err) => {
-          console.log(client);
-          console.log(err);
-          finish();
-        });
+    // it("should not allow subscribing to another user's topic", finish => {
+    //   // start({}, (broker, server) => {
+    //   // broker.on("clientError", (client, err) => {
+    //   //   console.log(client);
+    //   //   console.log(err);
+    //   //   finish();
+    //   // });
 
-        connect(
-          token,
-          {}
-        ).then(conn => {
-          subscribe("anotherUser/topic", conn);
-        });
-      });
-    });
+    //   connect(
+    //     token,
+    //     {}
+    //   ).then(conn => {
+    //     subscribe("anotherUser/topic", conn);
+    //   });
+    //   // });
+    // });
   });
 });
 

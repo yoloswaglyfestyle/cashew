@@ -1,17 +1,17 @@
-import * as jwt from 'jsonwebtoken';
-import { IPublishPacket, ISubscription } from 'mqtt-packet';
+import * as jwt from "jsonwebtoken";
+import { IPublishPacket, ISubscription } from "mqtt-packet";
 
 export function authorizePublish(
   _: any,
   packet: IPublishPacket,
-  done: (err?: Error | null) => void,
+  done: (err?: Error | null) => void
 ) {
-  if (packet.topic === 'aaaa') {
-    return done(new Error('wrong topic'));
+  if (packet.topic === "aaaa") {
+    return done(new Error("wrong topic"));
   }
 
-  if (packet.topic === 'bbb') {
-    packet.payload = new Buffer('overwrite packet payload');
+  if (packet.topic === "bbb") {
+    packet.payload = new Buffer("overwrite packet payload");
   }
 
   done(null);
@@ -20,16 +20,20 @@ export function authorizePublish(
 export function authorizeSubscribe(
   client: any,
   sub: ISubscription,
-  done: (err: Error | null, subscription?: ISubscription | null) => void,
+  done: (err: Error | null, subscription?: ISubscription | null) => void
 ) {
   if (!client.deviceProfile) {
-    return done(new Error('Not authenticated. Please login!'));
+    return done(new Error("Not authenticated. Please login!"), null);
   }
   if (client.deviceProfile.handler) {
     return done(null, sub);
   }
   if (sub.topic.indexOf(client.deviceProfile.user_id) !== 0) {
-    return done(new Error(`Not authorized to subscribe to "${sub.topic}."`));
+    // return done(
+    //   new Error(`Not authorized to subscribe to "${sub.topic}."`),
+    //   null
+    // );
+    return done(null, { ...sub, topic: "dead" });
   }
 
   // if (sub.topic === 'bbb') {
@@ -46,23 +50,23 @@ export function authenticateWithJWT(
   password: string,
   done: (
     err: Error & { returnCode: number } | null,
-    success: boolean | null,
-  ) => void,
+    success: boolean | null
+  ) => void
 ) {
-  if (username !== 'JWT') {
+  if (username !== "JWT") {
     return done(null, false);
   }
 
   jwt.verify(
     password.toString(),
-    process.env.JWT_SECRET || 'shhhhh',
+    process.env.JWT_SECRET || "shhhhh",
     (err, profile) => {
       if (err) {
-        console.error('authentication', err);
+        console.error("authentication", err);
         const BAD_USERNAME_OR_PASSWORD = 4;
         const e: Error & { returnCode: number } = {
-          ...new Error('Error getting UserInfo'),
-          returnCode: BAD_USERNAME_OR_PASSWORD,
+          ...new Error("Error getting UserInfo"),
+          returnCode: BAD_USERNAME_OR_PASSWORD
         };
 
         return done(e, false);
@@ -70,6 +74,6 @@ export function authenticateWithJWT(
       client.deviceProfile = profile;
 
       return done(null, true);
-    },
+    }
   );
 }

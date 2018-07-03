@@ -8,13 +8,8 @@
       "name": "Example",
       "type": "node",
       "request": "launch",
-      "args": [
-        "${workspaceRoot}/examples/demo.ts"
-      ],
-      "runtimeArgs": [
-        "-r",
-        "ts-node/register"
-      ],
+      "args": ["${workspaceRoot}/examples/demo.ts"],
+      "runtimeArgs": ["-r", "ts-node/register"],
       "cwd": "${workspaceRoot}",
       "protocol": "inspector",
       "internalConsoleOptions": "openOnSessionStart"
