@@ -60,6 +60,7 @@ export function authenticateWithJWT(
   jwt.verify(
     password.toString(),
     process.env.JWT_SECRET || "shhhhh",
+    { algorithms: ["HS256", "RS256"] },
     (err, profile) => {
       if (err) {
         console.error("authentication", err);
