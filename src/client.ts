@@ -18,7 +18,7 @@ export function connect(
   const opts: IClientOptions = { ...defaultOptions, ...options };
 
   process.on("uncaughtException", exception => {
-    opts.logger.error("client", "uncaughtException", exception);
+    (opts.logger || console).error("client", "uncaughtException", exception);
     throw exception;
   });
 
