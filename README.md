@@ -7,62 +7,66 @@ Cashew is a real-time communications backend for connected applications.
 ```sh
 npm i
 ```
+
 ### Getting Started
 
 #### The Broker
 
 ```javascript
-import { start } from 'cashew-mqtt';
+import { start } from "cashew-mqtt";
 
 start(
   {
-    port: 8883,
+    port: 8883
   },
   () => {
     console.log("Cashew running on port " + 8883);
   }
 );
 ```
+
 #### The Client (handler)
 
 ```javascript
-import * as cashew from 'cashew-mqtt';
-import * as jwt from 'jsonwebtoken';
+import * as cashew from "cashew-mqtt";
+import * as jwt from "jsonwebtoken";
 
 const options = {
-  clientId: 'ping-pong',
-  host: 127.0.0.1,
-  port: 8883,
-  parse: safeParse,
+  clientId: "ping-pong",
+  brokerUrl: "ws://127.0.0.1:8883",
+  parse: safeParse
 };
 
 function getHandlerToken() {
   return jwt.sign(
     {
       handler: {
-        name: 'ping-pong',
+        name: "ping-pong"
       },
       user_id
     },
-   	'secret_key',
+    "secret_key"
   );
 }
 
 cashew
-	.connect(getHandlerToken(), options)
-	.then(conn => {
-		console.log('Connected.');
-		cashew.subscribe(`+/ping`, conn).observe((p) => {
-			console.log('Got ping. Publishing pong...');
+  .connect(
+    getHandlerToken(),
+    options
+  )
+  .then(conn => {
+    console.log("Connected.");
+    cashew.subscribe(`+/ping`, conn).observe(p => {
+      console.log("Got ping. Publishing pong...");
 
-			cashew.subscribe(`${p.user_id}/pong`, conn).observe(() => {
-				console.log('Got pong. Test complete.');
-			});
+      cashew.subscribe(`${p.user_id}/pong`, conn).observe(() => {
+        console.log("Got pong. Test complete.");
+      });
 
-			const responsePayload = JSON.stringify(p);
-			cashew.publish(`${p.user_id}/pong`, responsePayload, conn);
-		});
-	})
+      const responsePayload = JSON.stringify(p);
+      cashew.publish(`${p.user_id}/pong`, responsePayload, conn);
+    });
+  });
 ```
 
 See more examples in our [demo](https://github.com/bsommardahl/cashew/tree/master/examples).
@@ -72,6 +76,7 @@ See more examples in our [demo](https://github.com/bsommardahl/cashew/tree/maste
 ### Setup
 
 Demo Prereq's:
+
 - Mongo Db
 - Loggly Account
 
@@ -96,8 +101,6 @@ npm run demo
 ```
 
 You should see a series of console logs. After 3 seconds, you should see that the mobile device requested and received apples. After a few more seconds, you should see that the mobile device requests "more apples" (literally) and gets two sets: 1) from a simple handler and 2) from a db-connected handler. In all, the client should have received 9 apples of different colors.
-
-
 
 ## Concepts
 
@@ -133,6 +136,7 @@ Handlers monitor (subscribe to) topics in order to carry out the wishes of the u
 Handlers also authenticate using JWT and must have a `handler` property to be allowed to subscribe. In the future, we will lock down handlers so that they can only subscribe to predetermined topics.
 
 ## Conventions
+
 ### Topic Naming
 
 In general, topic names should be pretty descriptive. It's best to let topic names describe the specific action you'd like to perform. Topics are free, so there's no reason to try to shoe-horn several intentions into one "god-topic". For some great advice when naming topics, please check out this article by HiveMq: https://www.hivemq.com/blog/mqtt-essentials-part-5-mqtt-topics-best-practices.
@@ -144,6 +148,7 @@ We will give you a few additional guidelines:
 - Many times, events are directed at a specific user. In that case, the user's id must be included in the message so that, like a letter in the mail, it gets to the right destination. We use the following format: "{userId}/{eventName}..." For example, if the event is "got_apples" and the userId is "123", then the mobile device must subscribe to "123/get_apples" to start receiving those events.
 
 ## Scenarios
+
 ### Example Scenario - "Add a contact"
 
 - RequestContactHandler - subscribes to "request_contact" topic
@@ -185,6 +190,7 @@ We will give you a few additional guidelines:
 ### Security
 
 #### TLS
+
 Connection to the broker must be made with TLS.
 
 Create a test cert and key file using the following command. This tutorial might help: http://www.steves-internet-guide.com/mosquitto-tls/
@@ -196,6 +202,7 @@ Clients need the ca cert along with the server cert and key. The server only nee
 The authorization mechanism is written to only allow mobile devices to subscribe to topics that include the user's id in the first segment of the topic name. If the wrong user id is provided, the subscription is refused.
 
 ## Todo
+
 - Confirm protection against MiTM and DDoS attacks
 
 ## Credits
@@ -203,4 +210,5 @@ The authorization mechanism is written to only allow mobile devices to subscribe
 Thanks to Jakub Synowiec (@jsynowiec) for taking the time to create and maintain a great node/ts boilerplate. It helped us get moving much faster! https://github.com/jsynowiec/node-typescript-boilerplate
 
 ## Sponsors
+
 [![Vault Wallet](https://vaultwallet.io/wp-content/uploads/2018/03/vault_logo_light.png)](https://vaultwallet.io)

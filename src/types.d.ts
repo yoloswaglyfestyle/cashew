@@ -1,4 +1,4 @@
-import { MqttClient } from 'mqtt';
+import { MqttClient } from "mqtt";
 
 interface ITLSKeys {
   key: Buffer;
@@ -7,7 +7,6 @@ interface ITLSKeys {
 }
 
 interface IBrokerOptions {
-  keys?: ITLSKeys;
   port?: string;
   logger?: Console;
   mq?: any;
@@ -16,11 +15,8 @@ interface IBrokerOptions {
 }
 
 interface IClientOptions {
-  keys?: ITLSKeys;
-  host?: string;
-  port?: string;
   logger?: Console;
-  protocol?: string;
+  brokerUrl?: string;
   clientId?: string;
   parse?: any;
 }

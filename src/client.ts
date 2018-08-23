@@ -8,11 +8,9 @@ export function connect(
   options?: IClientOptions
 ): Promise<IClientConnection> {
   const defaultOptions: IClientOptions = {
+    brokerUrl: process.env.BROKER_URL || `ws://0.0.0.0:1883`,
     clientId: `device_${new Date().getTime()}`,
-    host: process.env.BROKER_HOST || "0.0.0.0",
-    parse: JSON.parse,
-    port: process.env.BROKER_PORT || "1883",
-    protocol: "mqtt"
+    parse: JSON.parse
   };
 
   const opts: IClientOptions = { ...defaultOptions, ...options };
@@ -30,17 +28,14 @@ export function connect(
       reject: (reason?: Error) => void
     ) => {
       try {
-        const client: MqttClient = mqttConnect(
-          `ws://${opts.host}:${opts.port}`,
-          {
-            // protocol: opts.protocol,
-            // keys: opts.keys,
-            clientId: opts.clientId,
-            password: token,
-            rejectUnauthorized: false,
-            username: "JWT"
-          }
-        );
+        const client: MqttClient = mqttConnect(opts.brokerUrl, {
+          // protocol: opts.protocol,
+          // keys: opts.keys,
+          clientId: opts.clientId,
+          password: token,
+          rejectUnauthorized: false,
+          username: "JWT"
+        });
 
         client.on("connect", () => {
           const conn: IClientConnection = { client, options: opts };
