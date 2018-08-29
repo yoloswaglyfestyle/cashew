@@ -8,7 +8,7 @@ export function connect(
   options?: IClientOptions
 ): Promise<IClientConnection> {
   const defaultOptions: IClientOptions = {
-    brokerUrl: process.env.BROKER_URL || `ws://0.0.0.0:8883`,
+    brokerUrl: `ws://localhost:8883`,
     clientId: `device_${new Date().getTime()}`,
     keepalive: 30000,
     parse: JSON.parse
