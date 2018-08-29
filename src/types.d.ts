@@ -4,7 +4,7 @@ interface IClientOptions {
   logger?: Console;
   brokerUrl?: string;
   clientId?: string;
-  keepalive?: number;
+  keepalive?: string;
   parse?: any;
 }
 

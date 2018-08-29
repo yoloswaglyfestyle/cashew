@@ -10,7 +10,7 @@ export function connect(
   const defaultOptions: IClientOptions = {
     brokerUrl: `ws://localhost:8883`,
     clientId: `device_${new Date().getTime()}`,
-    keepalive: 30000,
+    keepalive: "30000",
     parse: JSON.parse
   };
 
@@ -31,7 +31,7 @@ export function connect(
       try {
         const client: MqttClient = mqttConnect(opts.brokerUrl, {
           clientId: opts.clientId,
-          keepalive: opts.keepalive,
+          keepalive: parseInt(opts.keepalive, 10),
           password: token,
           rejectUnauthorized: false,
           username: "JWT"
