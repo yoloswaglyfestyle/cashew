@@ -10,21 +10,6 @@ npm i
 
 ### Getting Started
 
-#### The Broker
-
-```javascript
-import { start } from "cashew-mqtt";
-
-start(
-  {
-    port: 8883
-  },
-  () => {
-    console.log("Cashew running on port " + 8883);
-  }
-);
-```
-
 #### The Client (handler)
 
 ```javascript
@@ -34,6 +19,7 @@ import * as jwt from "jsonwebtoken";
 const options = {
   clientId: "ping-pong",
   brokerUrl: "ws://127.0.0.1:8883",
+  keeyalive: 30000,
   parse: safeParse
 };
 

@@ -8,8 +8,9 @@ export function connect(
   options?: IClientOptions
 ): Promise<IClientConnection> {
   const defaultOptions: IClientOptions = {
-    brokerUrl: process.env.BROKER_URL || `ws://0.0.0.0:1883`,
+    brokerUrl: process.env.BROKER_URL || `ws://0.0.0.0:8883`,
     clientId: `device_${new Date().getTime()}`,
+    keepalive: 30000,
     parse: JSON.parse
   };
 
@@ -29,9 +30,8 @@ export function connect(
     ) => {
       try {
         const client: MqttClient = mqttConnect(opts.brokerUrl, {
-          // protocol: opts.protocol,
-          // keys: opts.keys,
           clientId: opts.clientId,
+          keepalive: opts.keepalive,
           password: token,
           rejectUnauthorized: false,
           username: "JWT"
